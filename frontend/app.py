@@ -1,5 +1,7 @@
 import flet as ft
 import requests
+import matplotlib.pyplot as plt
+import numpy as np
 
 def main(page: ft.Page):
     page.title = "ChatBot Especialista em Carreira"
@@ -19,12 +21,21 @@ def main(page: ft.Page):
         
         page.update()
 
+    def generate_chart(e):
+        response = requests.get("http://localhost:3000/api/generate_chart?user=user1")
+        with open("radar_chart.png", "wb") as f:
+            f.write(response.content)
+        messages.controls.append(ft.Image(src="radar_chart.png", width=400, height=400))
+        page.update()
+
     send_button = ft.ElevatedButton(text="Enviar", on_click=send_message)
+    chart_button = ft.ElevatedButton(text="Gerar Gráfico", on_click=generate_chart)
 
     page.add(
         messages,
         input_text,
         send_button,
+        chart_button,
     )
 
 ft.app(target=main)
